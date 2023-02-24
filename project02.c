@@ -92,11 +92,11 @@ char *add_one(char *str)
 	return res;
 }
 
- struct entry {
+struct entry {
 	char passwd[PASSWD_MAX_LEN + 1];
 	char dig_str[DIG_STR_LEN + 1];
 	struct entry *next;
-	} entry;
+} entry;
 
 void print_list(struct entry *head) {
 	while (head) {
