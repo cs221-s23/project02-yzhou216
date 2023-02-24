@@ -115,7 +115,6 @@ int main(int argc, char **argv)
 	char *fpath;
 	fpath = argv[1];
 
-
 	struct entry *head = NULL;
 	struct entry *cur = NULL;
 
@@ -127,11 +126,11 @@ int main(int argc, char **argv)
 			exit(-1);
 		}
 
-		memset(pair->passwd, 0, PASSWD_MAX_LEN + 1);
+		memset(pair, 0, sizeof(struct entry));
+
 		strncpy(pair->passwd, passwords[i], PASSWD_MAX_LEN);
 
 		dig_str = dig(passwords[i]);
-		memset(pair->dig_str, 0, DIG_STR_LEN + 1);
 		strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
 		free(dig_str);
 
