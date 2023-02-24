@@ -1,6 +1,6 @@
 PROG = project02
 OBJS = project02.o sha256.o passwords.o
-TMP = $(PROG) $(OBJS) dict.txt
+TMP = $(PROG) $(OBJS) passwords.txt dict.csv
 
 %.o: %.c
 	gcc -c -g -o $@ $<
