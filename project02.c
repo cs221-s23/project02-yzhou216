@@ -121,15 +121,13 @@ int main(int argc, char **argv)
 	char *dig_str;
 	for (int i = 0; i < DICT_LEN; i++) {
 		struct entry *pair = malloc(sizeof(struct entry));
+		memset(pair, 0, sizeof(struct entry));
 		if (!pair) {
 			printf("malloc failed\n");
 			exit(-1);
 		}
 
-		memset(pair, 0, sizeof(struct entry));
-
 		strncpy(pair->passwd, passwords[i], PASSWD_MAX_LEN);
-
 		dig_str = dig(passwords[i]);
 		strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
 		free(dig_str);
