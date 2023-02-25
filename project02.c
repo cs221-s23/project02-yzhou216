@@ -12,6 +12,9 @@
 #define DICT_LEN (sizeof(passwords) / sizeof(passwords[0]))
 #define PASSWD_MAX_LEN 64
 
+#define ARGC_MAX 4
+#define ARGC_MIN 3
+
 void sha256(char *dest, char *src)
 {
 	/* zero out the sha256 context */
@@ -191,15 +194,47 @@ void print_list(struct entry *head) {
 	}
 }
 
-int main(int argc, char **argv)
-{
-	if (argc != 2) {
-		printf("invalid arguments\n");
-		exit(-1);
+void arg_check(int argc, char **argv,
+	       char **fpath_passwds,
+	       char **fpath_dict,
+	       int *verbose) {
+
+	*fpath_passwds = argv[1];
+	*fpath_dict = argv[2];
+
+	char *vflag = argv[3];
+
+	if (argc <= ARGC_MAX && argc >= ARGC_MIN) {
+		goto vflag_check;
+	} else {
+		if (argc < ARGC_MIN) {
+			printf("not enough arguments\n");
+			exit(-1);
+		}
+		if (argc > ARGC_MAX) {
+			printf("too many arguments\n");
+			exit(-1);
+		}
 	}
 
-	char *fpath;
-	fpath = argv[1];
+vflag_check:
+	if (argc == 4) {
+		if (!strcmp(vflag, "-v") || !strcmp(vflag, "--verbose")) {
+			*verbose = 0;
+		} else {
+			printf("invalid arguments\n");
+			exit(-1);
+		}
+
+	}
+}
+
+int main(int argc, char **argv)
+{
+	char *fpath_passwds;
+	char *fpath_dict;
+	int verbose = 1;
+	arg_check(argc, argv, &fpath_passwds, &fpath_dict, &verbose);
 
 	struct entry *head = NULL;
 
