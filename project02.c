@@ -229,6 +229,18 @@ vflag_check:
 	}
 }
 
+void write_dict(struct entry *head, char *fpath_dict)
+{
+	FILE *fp = fopen(fpath_dict, "w");
+	int list_len = 0;
+	while (head) {
+		fprintf(fp, "%s,%s\n", head->dig_str, head->passwd);
+		head = head->next;
+		list_len++;
+	}
+	printf("%d\n", list_len);
+}
+
 int main(int argc, char **argv)
 {
 	char *fpath_passwds;
@@ -256,6 +268,8 @@ int main(int argc, char **argv)
 		add_node(&head, add_one_pair);
 	}
 	print_list(head);
+
+	write_dict(head, fpath_dict);
 
 	return 0;
 }
