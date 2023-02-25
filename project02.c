@@ -101,7 +101,8 @@ struct entry {
 	struct entry *next;
 } entry;
 
-int duplicated_dig_str(char *str) {
+int duplicated_dig_str(char *str)
+{
 	/*
 	 * determine whether hash digest of leetified string is the same as hash
 	 * digest of plaintext string
@@ -115,7 +116,8 @@ int duplicated_dig_str(char *str) {
 	return 1;
 }
 
-struct entry *create_plaintext_node(char *passwd) {
+struct entry *create_plaintext_node(char *passwd)
+{
 	char *dig_str;
 
 	struct entry *pair = malloc(sizeof(struct entry));
@@ -133,7 +135,8 @@ struct entry *create_plaintext_node(char *passwd) {
 	return pair;
 }
 
-struct entry *create_leet_node(char *passwd) {
+struct entry *create_leet_node(char *passwd)
+{
 	char *leet_str;
 	char *dig_str;
 
@@ -154,7 +157,8 @@ struct entry *create_leet_node(char *passwd) {
 	return pair;
 }
 
-struct entry *create_add_one_node(char *passwd) {
+struct entry *create_add_one_node(char *passwd)
+{
 	char *add_one_str;
 	char *dig_str;
 
@@ -175,7 +179,8 @@ struct entry *create_add_one_node(char *passwd) {
 	return pair;
 }
 
-void add_node(struct entry **head, struct entry *node) {
+void add_node(struct entry **head, struct entry *node)
+{
 	if (*head == NULL) {
 		*head = node;
 		return;
@@ -187,7 +192,8 @@ void add_node(struct entry **head, struct entry *node) {
 	cur->next = node;
 }
 
-void print_list(struct entry *head) {
+void print_list(struct entry *head)
+{
 	while (head) {
 		printf("%s\n", head->passwd);
 		head = head->next;
@@ -197,7 +203,8 @@ void print_list(struct entry *head) {
 void arg_check(int argc, char **argv,
 	       char **fpath_passwds,
 	       char **fpath_dict,
-	       int *verbose) {
+	       int *verbose)
+{
 
 	*fpath_passwds = argv[1];
 	*fpath_dict = argv[2];
@@ -267,7 +274,6 @@ int main(int argc, char **argv)
 		add_one_pair->next = NULL;
 		add_node(&head, add_one_pair);
 	}
-	print_list(head);
 
 	write_dict(head, fpath_dict);
 
