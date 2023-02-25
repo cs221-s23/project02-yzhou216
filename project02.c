@@ -192,9 +192,9 @@ int main(int argc, char **argv)
 	struct entry *head = NULL;
 	struct entry *cur = NULL;
 
-	char *dig_str;
 	for (int i = 0; i < DICT_LEN; i++) {
-		struct entry *plaintext_pair = create_plaintext_node(passwords[i]);
+		struct entry *plaintext_pair
+			     = create_plaintext_node(passwords[i]);
 		plaintext_pair->next = NULL;
 		if (!head)
 			head = plaintext_pair;
@@ -203,7 +203,8 @@ int main(int argc, char **argv)
 		cur = plaintext_pair;
 
 		if (duplicated_dig_str(passwords[i])) {
-			struct entry *leet_pair = create_leet_node(passwords[i]);
+			struct entry *leet_pair
+				     = create_leet_node(passwords[i]);
 			plaintext_pair->next = NULL;
 			if (!head)
 				head = leet_pair;
