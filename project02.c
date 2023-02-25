@@ -98,6 +98,24 @@ struct entry {
 	struct entry *next;
 } entry;
 
+struct entry *create_plaintext_node(char *passwd) {
+	char *dig_str;
+
+	struct entry *pair = malloc(sizeof(struct entry));
+	if (!pair) {
+		printf("malloc failed\n");
+		exit(-1);
+	}
+	memset(pair, 0, sizeof(struct entry));
+
+	strncpy(pair->passwd, passwd, PASSWD_MAX_LEN);
+	dig_str = dig(passwd);
+	strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
+	free(dig_str);
+
+	return pair;
+}
+
 void print_list(struct entry *head) {
 	while (head) {
 		printf("%s\n", head->passwd);
@@ -120,20 +138,8 @@ int main(int argc, char **argv)
 
 	char *dig_str;
 	for (int i = 0; i < DICT_LEN; i++) {
-		struct entry *pair = malloc(sizeof(struct entry));
-		if (!pair) {
-			printf("malloc failed\n");
-			exit(-1);
-		}
-		memset(pair, 0, sizeof(struct entry));
-
-		strncpy(pair->passwd, passwords[i], PASSWD_MAX_LEN);
-		dig_str = dig(passwords[i]);
-		strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
-		free(dig_str);
-
+		struct entry *pair = create_plaintext_node(passwords[i]);
 		pair->next = NULL;
-
 		if (!head)
 			head = pair;
 		else
