@@ -172,6 +172,18 @@ struct entry *create_add_one_node(char *passwd) {
 	return pair;
 }
 
+void add_node(struct entry **head, struct entry *node) {
+	if (*head == NULL) {
+		*head = node;
+		return;
+	}
+	struct entry *cur = *head;
+	while (cur->next != NULL) {
+		cur = cur->next;
+	}
+	cur->next = node;
+}
+
 void print_list(struct entry *head) {
 	while (head) {
 		printf("%s\n", head->passwd);
@@ -190,37 +202,23 @@ int main(int argc, char **argv)
 	fpath = argv[1];
 
 	struct entry *head = NULL;
-	struct entry *cur = NULL;
 
 	for (int i = 0; i < DICT_LEN; i++) {
 		struct entry *plaintext_pair
 			     = create_plaintext_node(passwords[i]);
 		plaintext_pair->next = NULL;
-		if (!head)
-			head = plaintext_pair;
-		else
-			cur->next = plaintext_pair;
-		cur = plaintext_pair;
+		add_node(&head, plaintext_pair);
 
 		if (duplicated_dig_str(passwords[i])) {
 			struct entry *leet_pair
 				     = create_leet_node(passwords[i]);
 			plaintext_pair->next = NULL;
-			if (!head)
-				head = leet_pair;
-			else
-				cur->next = leet_pair;
-			cur = leet_pair;
+			add_node(&head, leet_pair);
 		}
 
 		struct entry *add_one_pair = create_add_one_node(passwords[i]);
 		add_one_pair->next = NULL;
-		if (!head)
-			head = add_one_pair;
-		else
-			cur->next = add_one_pair;
-		cur = add_one_pair;
-
+		add_node(&head, add_one_pair);
 	}
 	print_list(head);
 
