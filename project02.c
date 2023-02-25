@@ -98,6 +98,20 @@ struct entry {
 	struct entry *next;
 } entry;
 
+int duplicated_dig_str(char *str) {
+	/*
+	 * determine whether hash digest of leetified string is the same as hash
+	 * digest of plaintext string
+	 */
+	char *leet_str = leet(str);
+	if (!strcmp(leet_str, str)) {
+		free(leet_str);
+		return 0;
+	}
+	free(leet_str);
+	return 1;
+}
+
 struct entry *create_plaintext_node(char *passwd) {
 	char *dig_str;
 
@@ -110,6 +124,48 @@ struct entry *create_plaintext_node(char *passwd) {
 
 	strncpy(pair->passwd, passwd, PASSWD_MAX_LEN);
 	dig_str = dig(passwd);
+	strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
+	free(dig_str);
+
+	return pair;
+}
+
+struct entry *create_leet_node(char *passwd) {
+	char *leet_str;
+	char *dig_str;
+
+	struct entry *pair = malloc(sizeof(struct entry));
+	if (!pair) {
+		printf("malloc failed\n");
+		exit(-1);
+	}
+	memset(pair, 0, sizeof(struct entry));
+
+	leet_str = leet(passwd);
+	strncpy(pair->passwd, leet_str, PASSWD_MAX_LEN);
+	dig_str = dig(leet_str);
+	free(leet_str);
+	strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
+	free(dig_str);
+
+	return pair;
+}
+
+struct entry *create_add_one_node(char *passwd) {
+	char *add_one_str;
+	char *dig_str;
+
+	struct entry *pair = malloc(sizeof(struct entry));
+	if (!pair) {
+		printf("malloc failed\n");
+		exit(-1);
+	}
+	memset(pair, 0, sizeof(struct entry));
+
+	add_one_str = add_one(passwd);
+	strncpy(pair->passwd, add_one_str, PASSWD_MAX_LEN);
+	dig_str = dig(add_one_str);
+	free(add_one_str);
 	strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
 	free(dig_str);
 
@@ -138,13 +194,32 @@ int main(int argc, char **argv)
 
 	char *dig_str;
 	for (int i = 0; i < DICT_LEN; i++) {
-		struct entry *pair = create_plaintext_node(passwords[i]);
-		pair->next = NULL;
+		struct entry *plaintext_pair = create_plaintext_node(passwords[i]);
+		plaintext_pair->next = NULL;
 		if (!head)
-			head = pair;
+			head = plaintext_pair;
 		else
-			cur->next = pair;
-		cur = pair;
+			cur->next = plaintext_pair;
+		cur = plaintext_pair;
+
+		if (duplicated_dig_str(passwords[i])) {
+			struct entry *leet_pair = create_leet_node(passwords[i]);
+			plaintext_pair->next = NULL;
+			if (!head)
+				head = leet_pair;
+			else
+				cur->next = leet_pair;
+			cur = leet_pair;
+		}
+
+		struct entry *add_one_pair = create_add_one_node(passwords[i]);
+		add_one_pair->next = NULL;
+		if (!head)
+			head = add_one_pair;
+		else
+			cur->next = add_one_pair;
+		cur = add_one_pair;
+
 	}
 	print_list(head);
 
