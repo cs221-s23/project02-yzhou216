@@ -261,21 +261,16 @@ int main(int argc, char **argv)
 		printf("fopen failed\n");
 		exit(-1);
 	}
-	char passwd[PASSWD_MAX_LEN];
-	char *dict[DICT_MAX_LEN];
+	char dict[DICT_MAX_LEN][PASSWD_MAX_LEN];
 	int dict_len = 0;
-	while (fgets(passwd, PASSWD_MAX_LEN, fp) && dict_len < DICT_MAX_LEN) {
-		dict[dict_len] = (char*) malloc(PASSWD_MAX_LEN);
-		strcpy(dict[dict_len], passwd);
-		dict_len++;
+	while (!feof(fp) && !ferror(fp)) {
+		if(fgets(dict[dict_len], PASSWD_MAX_LEN, fp))
+			dict_len++;
 	}
-	printf("lenth: %d\n", dict_len);
-	printf("The lines in the file are:\n");
-	for (int j = 0; j < dict_len; j++) {
-		printf("%s", dict[j]);
-		free(dict[j]); // free memory allocated for each line
+
+	for (int i = 0; i < dict_len; i++) {
+		dict[i][strcspn(dict[i], "\n")] = 0;
 	}
-	return 0;
 
 	struct entry *head = NULL;
 
