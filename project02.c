@@ -191,6 +191,14 @@ void add_node(struct entry **head, struct entry *node)
 	cur->next = node;
 }
 
+void print_list(struct entry *head)
+{
+	while (head) {
+		printf("%s\n", head->passwd);
+		head = head->next;
+	}
+}
+
 void arg_check(int argc, char **argv,
 	       char **fpath_passwds,
 	       char **fpath_dict,
