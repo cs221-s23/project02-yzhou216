@@ -237,13 +237,10 @@ vflag_check:
 
 void write_dict(struct entry *head, FILE *fp)
 {
-	int list_len = 0;
 	while (head) {
 		fprintf(fp, "%s,%s\n", head->dig_str, head->passwd);
 		head = head->next;
-		list_len++;
 	}
-	printf("%d\n", list_len);
 }
 
 int main(int argc, char **argv)
@@ -266,6 +263,7 @@ int main(int argc, char **argv)
 			dict_len++;
 	}
 
+	/* remove trailing newline characters from fgets input */
 	for (int i = 0; i < dict_len; i++) {
 		dict[i][strcspn(dict[i], "\n")] = 0;
 	}
