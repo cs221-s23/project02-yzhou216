@@ -10,6 +10,7 @@
 
 /* define the length of passwords dictionary */
 #define DICT_LEN (sizeof(passwords) / sizeof(passwords[0]))
+#define DICT_MAX_LEN 30000
 #define PASSWD_MAX_LEN 64
 
 #define ARGC_MAX 4
@@ -254,6 +255,28 @@ int main(int argc, char **argv)
 	int verbose = 1;
 	arg_check(argc, argv, &fpath_passwds, &fpath_dict, &verbose);
 
+	/* read passwords form argv[1] */
+	FILE *fp = fopen(fpath_passwds, "r");
+	if(!fp) {
+		printf("fopen failed\n");
+		exit(-1);
+	}
+	char passwd[PASSWD_MAX_LEN];
+	char *dict[DICT_MAX_LEN];
+	int dict_len = 0;
+	while (fgets(passwd, PASSWD_MAX_LEN, fp) && dict_len < DICT_MAX_LEN) {
+		dict[dict_len] = (char*) malloc(PASSWD_MAX_LEN);
+		strcpy(dict[dict_len], passwd);
+		dict_len++;
+	}
+	printf("lenth: %d\n", dict_len);
+	printf("The lines in the file are:\n");
+	for (int j = 0; j < dict_len; j++) {
+		printf("%s", dict[j]);
+		free(dict[j]); // free memory allocated for each line
+	}
+	return 0;
+
 	struct entry *head = NULL;
 
 	for (int i = 0; i < DICT_LEN; i++) {
@@ -274,7 +297,7 @@ int main(int argc, char **argv)
 		add_node(&head, add_one_pair);
 	}
 
-	FILE *fp = fopen(fpath_dict, "w");
+	fp = fopen(fpath_dict, "w");
 	write_dict(head, fp);
 	fclose(fp);
 
