@@ -2,14 +2,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "passwords.h"
 #include "sha256.h"
 
 #define DIG_BIN_LEN 32
 #define DIG_STR_LEN ((DIG_BIN_LEN * 2))
 
 /* define the length of passwords dictionary */
-#define DICT_LEN (sizeof(passwords) / sizeof(passwords[0]))
 #define DICT_MAX_LEN 30000
 #define PASSWD_MAX_LEN 64
 
@@ -274,20 +272,20 @@ int main(int argc, char **argv)
 
 	struct entry *head = NULL;
 
-	for (int i = 0; i < DICT_LEN; i++) {
+	for (int i = 0; i < dict_len; i++) {
 		struct entry *plaintext_pair
-			     = create_plaintext_node(passwords[i]);
+			     = create_plaintext_node(dict[i]);
 		plaintext_pair->next = NULL;
 		add_node(&head, plaintext_pair);
 
-		if (duplicated_dig_str(passwords[i])) {
+		if (duplicated_dig_str(dict[i])) {
 			struct entry *leet_pair
-				     = create_leet_node(passwords[i]);
+				     = create_leet_node(dict[i]);
 			plaintext_pair->next = NULL;
 			add_node(&head, leet_pair);
 		}
 
-		struct entry *add_one_pair = create_add_one_node(passwords[i]);
+		struct entry *add_one_pair = create_add_one_node(dict[i]);
 		add_one_pair->next = NULL;
 		add_node(&head, add_one_pair);
 	}
