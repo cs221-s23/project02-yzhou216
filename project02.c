@@ -194,9 +194,14 @@ void add_node(struct entry **head, struct entry *node)
 void print_list(struct entry *head)
 {
 	while (head) {
-		printf("%s\n", head->passwd);
+		/*
+		 * print the structure with the format:
+		 * <passwd> <fist five characters of dig_str>
+		 */
+		printf("%s %.5s...\n", head->passwd, head->dig_str);
 		head = head->next;
 	}
+	printf("\n");
 }
 
 void arg_check(int argc, char **argv,
@@ -279,6 +284,10 @@ int main(int argc, char **argv)
 			     = create_plaintext_node(passwds[i]);
 		plaintext_pair->next = NULL;
 		add_node(&head, plaintext_pair);
+		if (!verbose) {
+			printf("inserting: %s\n", plaintext_pair->passwd);
+			print_list(head);
+		}
 		dict_len++;
 
 		if (duplicated_dig_str(passwds[i])) {
@@ -286,12 +295,20 @@ int main(int argc, char **argv)
 				     = create_leet_node(passwds[i]);
 			plaintext_pair->next = NULL;
 			add_node(&head, leet_pair);
+			if (!verbose) {
+				printf("inserting: %s\n", leet_pair->passwd);
+				print_list(head);
+			}
 			dict_len++;
 		}
 
 		struct entry *add_one_pair = create_add_one_node(passwds[i]);
 		add_one_pair->next = NULL;
 		add_node(&head, add_one_pair);
+		if (!verbose) {
+			printf("inserting: %s\n", add_one_pair->passwd);
+			print_list(head);
+		}
 		dict_len++;
 	}
 
