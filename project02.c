@@ -256,34 +256,34 @@ int main(int argc, char **argv)
 		printf("fopen failed\n");
 		exit(-1);
 	}
-	char dict[DICT_MAX_LEN][PASSWD_MAX_LEN];
-	int dict_len = 0;
+	char passwds[DICT_MAX_LEN][PASSWD_MAX_LEN];
+	int lines = 0;
 	while (!feof(fp) && !ferror(fp)) {
-		if(fgets(dict[dict_len], PASSWD_MAX_LEN, fp))
-			dict_len++;
+		if(fgets(passwds[lines], PASSWD_MAX_LEN, fp))
+			lines++;
 	}
 
 	/* remove trailing newline characters from fgets input */
-	for (int i = 0; i < dict_len; i++) {
-		dict[i][strcspn(dict[i], "\n")] = 0;
+	for (int i = 0; i < lines; i++) {
+		passwds[i][strcspn(passwds[i], "\n")] = 0;
 	}
 
 	struct entry *head = NULL;
 
-	for (int i = 0; i < dict_len; i++) {
+	for (int i = 0; i < lines; i++) {
 		struct entry *plaintext_pair
-			     = create_plaintext_node(dict[i]);
+			     = create_plaintext_node(passwds[i]);
 		plaintext_pair->next = NULL;
 		add_node(&head, plaintext_pair);
 
-		if (duplicated_dig_str(dict[i])) {
+		if (duplicated_dig_str(passwds[i])) {
 			struct entry *leet_pair
-				     = create_leet_node(dict[i]);
+				     = create_leet_node(passwds[i]);
 			plaintext_pair->next = NULL;
 			add_node(&head, leet_pair);
 		}
 
-		struct entry *add_one_pair = create_add_one_node(dict[i]);
+		struct entry *add_one_pair = create_add_one_node(passwds[i]);
 		add_one_pair->next = NULL;
 		add_node(&head, add_one_pair);
 	}
