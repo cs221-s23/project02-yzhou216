@@ -235,8 +235,9 @@ vflag_check:
 	}
 }
 
-void write_dict(struct entry *head, FILE *fp)
+void write_dict(struct entry *head, int dict_len, FILE *fp)
 {
+	fprintf(fp, "%d\n", dict_len);
 	while (head) {
 		fprintf(fp, "%s,%s\n", head->dig_str, head->passwd);
 		head = head->next;
@@ -268,6 +269,9 @@ int main(int argc, char **argv)
 		passwds[i][strcspn(passwds[i], "\n")] = 0;
 	}
 
+	/* length of the linked list (dictionary) */
+	int dict_len = 0;
+
 	struct entry *head = NULL;
 
 	for (int i = 0; i < lines; i++) {
@@ -275,21 +279,24 @@ int main(int argc, char **argv)
 			     = create_plaintext_node(passwds[i]);
 		plaintext_pair->next = NULL;
 		add_node(&head, plaintext_pair);
+		dict_len++;
 
 		if (duplicated_dig_str(passwds[i])) {
 			struct entry *leet_pair
 				     = create_leet_node(passwds[i]);
 			plaintext_pair->next = NULL;
 			add_node(&head, leet_pair);
+			dict_len++;
 		}
 
 		struct entry *add_one_pair = create_add_one_node(passwds[i]);
 		add_one_pair->next = NULL;
 		add_node(&head, add_one_pair);
+		dict_len++;
 	}
 
 	fp = fopen(fpath_dict, "w");
-	write_dict(head, fp);
+	write_dict(head, dict_len, fp);
 	fclose(fp);
 
 	return 0;
