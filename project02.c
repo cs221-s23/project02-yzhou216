@@ -328,9 +328,8 @@ int main(int argc, char **argv)
 		}
 		dict_len++;
 
+		struct entry *leet_pair = create_leet_node(passwds[i]);
 		if (duplicated_dig_str(passwds[i])) {
-			struct entry *leet_pair
-				     = create_leet_node(passwds[i]);
 			plaintext_pair->next = NULL;
 			insert_node(&head, leet_pair, &tail);
 			if (!verbose) {
@@ -338,6 +337,12 @@ int main(int argc, char **argv)
 				print_list(head);
 			}
 			dict_len++;
+		} else {
+			if (!verbose) {
+				printf("inserting: %s\n", leet_pair->passwd);
+				print_list(head);
+			}
+			free(leet_pair);
 		}
 
 		struct entry *add_one_pair = create_add_one_node(passwds[i]);
