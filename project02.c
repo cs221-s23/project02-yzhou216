@@ -291,13 +291,13 @@ int list_len(struct entry *head)
 {
 	/* length of the linked list (dictionary) */
 	int dict_len = 0;
-	struct entry *cur = head;
-	while (cur != NULL) {
+	while (head) {
 		dict_len++;
-		cur = cur->next;
+		head = head->next;
 	}
 	return dict_len;
 }
+
 void write_dict(struct entry *head, int dict_len, FILE *fp)
 {
 	fprintf(fp, "%d\n", dict_len);
