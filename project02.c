@@ -186,6 +186,16 @@ void insert_node(struct entry **head, struct entry *node, struct entry **tail)
 		return;
 	}
 
+	/* check duplication */
+	struct entry *cur = *head;
+	while (cur->next != NULL) {
+		if (!strcmp(node->dig_str, cur->dig_str)) {
+			free(node);
+			return;
+		}
+		cur = cur->next;
+	}
+
 	/* insert before head */
 	if (strcmp(node->dig_str, (*head)->dig_str) < 0) {
 		node->next = *head;
@@ -194,7 +204,7 @@ void insert_node(struct entry **head, struct entry *node, struct entry **tail)
 	}
 
 	/* traverse */
-	struct entry *cur = *head;
+	cur = *head;
 	while (cur->next != NULL) {
 		if (strcmp(cur->next->dig_str, node->dig_str) > 0) {
 			node->next = cur->next;
@@ -277,6 +287,17 @@ vflag_check:
 	}
 }
 
+int list_len(struct entry *head)
+{
+	/* length of the linked list (dictionary) */
+	int dict_len = 0;
+	struct entry *cur = head;
+	while (cur != NULL) {
+		dict_len++;
+		cur = cur->next;
+	}
+	return dict_len;
+}
 void write_dict(struct entry *head, int dict_len, FILE *fp)
 {
 	fprintf(fp, "%d\n", dict_len);
@@ -311,9 +332,6 @@ int main(int argc, char **argv)
 		passwds[i][strcspn(passwds[i], "\n")] = 0;
 	}
 
-	/* length of the linked list (dictionary) */
-	int dict_len = 0;
-
 	struct entry *head = NULL;
 	struct entry *tail = NULL;
 
@@ -326,23 +344,13 @@ int main(int argc, char **argv)
 			printf("inserting: %s\n", plaintext_pair->passwd);
 			print_list(head);
 		}
-		dict_len++;
 
 		struct entry *leet_pair = create_leet_node(passwds[i]);
-		if (duplicated_dig_str(passwds[i])) {
-			plaintext_pair->next = NULL;
-			insert_node(&head, leet_pair, &tail);
-			if (!verbose) {
-				printf("inserting: %s\n", leet_pair->passwd);
-				print_list(head);
-			}
-			dict_len++;
-		} else {
-			if (!verbose) {
-				printf("inserting: %s\n", leet_pair->passwd);
-				print_list(head);
-			}
-			free(leet_pair);
+		plaintext_pair->next = NULL;
+		insert_node(&head, leet_pair, &tail);
+		if (!verbose) {
+			printf("inserting: %s\n", leet_pair->passwd);
+			print_list(head);
 		}
 
 		struct entry *add_one_pair = create_add_one_node(passwds[i]);
@@ -352,11 +360,10 @@ int main(int argc, char **argv)
 			printf("inserting: %s\n", add_one_pair->passwd);
 			print_list(head);
 		}
-		dict_len++;
 	}
 
 	fp = fopen(fpath_dict, "w");
-	write_dict(head, dict_len, fp);
+	write_dict(head, list_len(head), fp);
 	fclose(fp);
 
 	return 0;
