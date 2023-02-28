@@ -95,7 +95,11 @@ char *add_one(char *str)
 }
 
 struct entry {
-	char passwd[PASSWD_MAX_LEN + 1];
+	/*
+	 * set memory buffer to be one more byte than PASSWD_MAX_LEN for the new
+	 * character '1' at the end
+	 */
+	char passwd[PASSWD_MAX_LEN + 2];
 	char dig_str[DIG_STR_LEN + 1];
 	struct entry *next;
 } entry;
@@ -169,7 +173,11 @@ struct entry *create_add_one_node(char *passwd)
 	memset(pair, 0, sizeof(struct entry));
 
 	add_one_str = add_one(passwd);
-	strncpy(pair->passwd, add_one_str, PASSWD_MAX_LEN);
+	/*
+	 * set memory bond to be two more byte than PASSWD_MAX_LEN for the new
+	 * character '1' at the end
+	 */
+	strncpy(pair->passwd, add_one_str, PASSWD_MAX_LEN + 1);
 	dig_str = dig(add_one_str);
 	free(add_one_str);
 	strncpy(pair->dig_str, dig_str, DIG_STR_LEN);
