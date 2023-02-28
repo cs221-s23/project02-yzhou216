@@ -178,13 +178,15 @@ struct entry *create_add_one_node(char *passwd)
 	return pair;
 }
 
-void insert_node(struct entry **head, struct entry *node)
+void insert_node(struct entry **head, struct entry *node, struct entry **tail)
 {
 	if (*head == NULL) {
 		*head = node;
+		*tail = node;
 		return;
 	}
 
+	/* insert before head */
 	if (strcmp(node->dig_str, (*head)->dig_str) < 0) {
 		node->next = *head;
 		*head = node;
@@ -193,11 +195,24 @@ void insert_node(struct entry **head, struct entry *node)
 
 	/* traverse */
 	struct entry *cur = *head;
-	while (cur->next != NULL && strcmp(cur->next->dig_str, node->dig_str) < 0) {
+	while (cur->next != NULL) {
+		if (strcmp(cur->next->dig_str, node->dig_str) > 0) {
+			node->next = cur->next;
+			cur->next = node;
+			return;
+		}
 		cur = cur->next;
 	}
-	node->next = cur->next;
-	cur->next = node;
+
+	/* insert after tail */
+	if (strcmp((*tail)->dig_str, node->dig_str) < 0) {
+		(*tail)->next = node;
+		*tail = node;
+		return;
+	} else if (strcmp((*tail)->dig_str, node->dig_str) > 0) {
+		cur->next = node;
+		node->next = *tail;
+	}
 }
 
 void add_node(struct entry **head, struct entry *node)
@@ -300,12 +315,13 @@ int main(int argc, char **argv)
 	int dict_len = 0;
 
 	struct entry *head = NULL;
+	struct entry *tail = NULL;
 
 	for (int i = 0; i < lines; i++) {
 		struct entry *plaintext_pair
 			     = create_plaintext_node(passwds[i]);
 		plaintext_pair->next = NULL;
-		insert_node(&head, plaintext_pair);
+		insert_node(&head, plaintext_pair, &tail);
 		if (!verbose) {
 			printf("inserting: %s\n", plaintext_pair->passwd);
 			print_list(head);
@@ -316,7 +332,7 @@ int main(int argc, char **argv)
 			struct entry *leet_pair
 				     = create_leet_node(passwds[i]);
 			plaintext_pair->next = NULL;
-			insert_node(&head, leet_pair);
+			insert_node(&head, leet_pair, &tail);
 			if (!verbose) {
 				printf("inserting: %s\n", leet_pair->passwd);
 				print_list(head);
@@ -326,7 +342,7 @@ int main(int argc, char **argv)
 
 		struct entry *add_one_pair = create_add_one_node(passwds[i]);
 		add_one_pair->next = NULL;
-		insert_node(&head, add_one_pair);
+		insert_node(&head, add_one_pair, &tail);
 		if (!verbose) {
 			printf("inserting: %s\n", add_one_pair->passwd);
 			print_list(head);
