@@ -178,6 +178,28 @@ struct entry *create_add_one_node(char *passwd)
 	return pair;
 }
 
+void insert_node(struct entry **head, struct entry *node)
+{
+	if (*head == NULL) {
+		*head = node;
+		return;
+	}
+
+	if (strcmp(node->dig_str, (*head)->dig_str) < 0) {
+		node->next = *head;
+		*head = node;
+		return;
+	}
+
+	/* traverse */
+	struct entry *cur = *head;
+	while (cur->next != NULL && strcmp(cur->next->dig_str, node->dig_str) < 0) {
+		cur = cur->next;
+	}
+	node->next = cur->next;
+	cur->next = node;
+}
+
 void add_node(struct entry **head, struct entry *node)
 {
 	if (*head == NULL) {
@@ -283,7 +305,7 @@ int main(int argc, char **argv)
 		struct entry *plaintext_pair
 			     = create_plaintext_node(passwds[i]);
 		plaintext_pair->next = NULL;
-		add_node(&head, plaintext_pair);
+		insert_node(&head, plaintext_pair);
 		if (!verbose) {
 			printf("inserting: %s\n", plaintext_pair->passwd);
 			print_list(head);
@@ -294,7 +316,7 @@ int main(int argc, char **argv)
 			struct entry *leet_pair
 				     = create_leet_node(passwds[i]);
 			plaintext_pair->next = NULL;
-			add_node(&head, leet_pair);
+			insert_node(&head, leet_pair);
 			if (!verbose) {
 				printf("inserting: %s\n", leet_pair->passwd);
 				print_list(head);
@@ -304,7 +326,7 @@ int main(int argc, char **argv)
 
 		struct entry *add_one_pair = create_add_one_node(passwds[i]);
 		add_one_pair->next = NULL;
-		add_node(&head, add_one_pair);
+		insert_node(&head, add_one_pair);
 		if (!verbose) {
 			printf("inserting: %s\n", add_one_pair->passwd);
 			print_list(head);
