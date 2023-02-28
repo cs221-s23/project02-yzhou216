@@ -219,23 +219,13 @@ void insert_node(struct entry **head, struct entry *node, struct entry **tail)
 		(*tail)->next = node;
 		*tail = node;
 		return;
-	} else if (strcmp((*tail)->dig_str, node->dig_str) > 0) {
+	}
+
+	if (strcmp((*tail)->dig_str, node->dig_str) > 0) {
 		cur->next = node;
 		node->next = *tail;
-	}
-}
-
-void add_node(struct entry **head, struct entry *node)
-{
-	if (*head == NULL) {
-		*head = node;
 		return;
 	}
-	struct entry *cur = *head;
-	while (cur->next != NULL) {
-		cur = cur->next;
-	}
-	cur->next = node;
 }
 
 void print_list(struct entry *head)
@@ -316,14 +306,14 @@ int main(int argc, char **argv)
 
 	/* read passwords form argv[1] */
 	FILE *fp = fopen(fpath_passwds, "r");
-	if(!fp) {
+	if (!fp) {
 		printf("fopen failed\n");
 		exit(-1);
 	}
 	char passwds[DICT_MAX_LEN][PASSWD_MAX_LEN];
 	int lines = 0;
 	while (!feof(fp) && !ferror(fp)) {
-		if(fgets(passwds[lines], PASSWD_MAX_LEN, fp))
+		if (fgets(passwds[lines], PASSWD_MAX_LEN, fp))
 			lines++;
 	}
 
