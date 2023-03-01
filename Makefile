@@ -1,5 +1,5 @@
 PROG = project02
-OBJS = project02.o sha256.o passwords.o
+OBJS = project02.o sha256.o
 TMP = $(PROG) $(OBJS) *.txt
 
 %.o: %.c
