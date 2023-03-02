@@ -42,6 +42,10 @@ void sha256(char *dest, char *src)
 char *dig(char *str)
 {
 	char *res = (char *) malloc((DIG_STR_LEN + 1) * sizeof(char));
+	if (!res) {
+		printf("malloc failed\n");
+		exit(-1);
+	}
 	sha256(res, str);
 	return res;
 }
@@ -49,6 +53,10 @@ char *dig(char *str)
 char *leet(char *str)
 {
 	char *res = (char *) malloc((strlen(str) + 1) * sizeof(char));
+	if (!res) {
+		printf("malloc failed\n");
+		exit(-1);
+	}
 	for (int i = 0; i < strlen(str); i++) {
 		switch (str[i]) {
 			case 'o':
@@ -86,6 +94,10 @@ char *add_one(char *str)
 	 * string for the addition of the charactor '1' at the end.
 	 */
 	char *res = (char *) malloc((strlen(str) + 2) * sizeof(char));
+	if (!res) {
+		printf("malloc failed\n");
+		exit(-1);
+	}
 	/* length of the res string excluding the NULL terminator */
 	int res_len = strlen(str) + 1;
 	memset(res, 0, res_len + 1);
